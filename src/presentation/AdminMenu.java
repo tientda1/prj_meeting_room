@@ -1,41 +1,75 @@
 package presentation;
 
+import dao.IBookingDAO;
+import dao.IUserDAO;
+import dao.impl.BookingDAOImpl;
+import dao.impl.UserDAOImpl;
+import model.Booking;
 import model.Equipment;
 import model.Room;
+import model.User;
 import service.AdminService;
 import util.ValidationUtil;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class AdminMenu {
     private static final Scanner scanner = new Scanner(System.in);
     private static final AdminService adminService = new AdminService();
+    private static final IBookingDAO bookingDAO = new BookingDAOImpl();
+    private static final IUserDAO userDAO = new UserDAOImpl();
 
     public static void display() {
         boolean isRunning = true;
         while (isRunning) {
-            System.out.println("\n=== MENU QUẢN TRỊ VIÊN ===");
+            System.out.println("\n=== MENU ADMIN ===");
+            System.out.println("1. Quản lý Phòng họp");
+            System.out.println("2. Quản lý Thiết bị di động");
+            System.out.println("3. Quản lý Dịch vụ đi kèm (Đang phát triển)");
+            System.out.println("4. Quản lý Người dùng");
+            System.out.println("5. Duyệt & Phân công Đặt phòng");
+            System.out.println("0. Đăng xuất");
+            System.out.print("Chọn chức năng: ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1": roomMenu(); break;
+                case "2": equipmentMenu(); break;
+                case "3": serviceMenu(); break;
+                case "4": userMenu(); break;
+                case "5": bookingMenu(); break;
+                case "0":
+                    System.out.println("-> Đã đăng xuất.");
+                    Main.loggedInUser = null;
+                    isRunning = false;
+                    break;
+                default:
+                    System.out.println("-> Lựa chọn không hợp lệ.");
+            }
+        }
+    }
+
+    // --- 1. SUB-MENU QUẢN LÝ PHÒNG HỌP ---
+    private static void roomMenu() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- 1. QUẢN LÝ PHÒNG HỌP ---");
             System.out.println("1. Xem danh sách Phòng họp");
             System.out.println("2. Thêm Phòng họp mới");
             System.out.println("3. Sửa thông tin Phòng họp");
             System.out.println("4. Xóa Phòng họp");
-            System.out.println("5. Xem danh sách Thiết bị");
-            System.out.println("6. Thêm Thiết bị mới");
-            System.out.println("7. Cập nhật số lượng thiết bị khả dụng");
-            System.out.println("8. Tạo tài khoản Support Staff / Admin");
-            System.out.println("0. Đăng xuất");
+            System.out.println("5. Tìm kiếm Phòng họp theo tên");
+            System.out.println("0. Quay lại");
             System.out.print("Chọn chức năng: ");
 
             String choice = scanner.nextLine().trim();
             switch (choice) {
                 case "1":
                     List<Room> rooms = adminService.getAllRooms();
-                    if (rooms.isEmpty()) {
-                        System.out.println("-> Chưa có phòng họp nào.");
-                    } else {
-                        printRoomTable(rooms);
-                    }
+                    if (rooms.isEmpty()) System.out.println("-> Chưa có phòng họp nào.");
+                    else printRoomTable(rooms);
                     break;
                 case "2":
                     System.out.print("Tên phòng: ");
@@ -55,6 +89,18 @@ public class AdminMenu {
                 case "3":
                     System.out.print("Nhập ID phòng cần sửa: ");
                     int editId = ValidationUtil.getValidInt(scanner);
+
+                    // Lấy thông tin cũ hiển thị cho người dùng
+                    Room oldRoom = adminService.getAllRooms().stream().filter(r -> r.getId() == editId).findFirst().orElse(null);
+                    if (oldRoom == null) {
+                        System.out.println("-> Không tìm thấy phòng với ID này!");
+                        break;
+                    }
+                    System.out.println("--- Thông tin cũ ---");
+                    System.out.printf("Tên: %s | Sức chứa: %d | Vị trí: %s | TB: %s%n",
+                            oldRoom.getRoomName(), oldRoom.getCapacity(), oldRoom.getLocation(), oldRoom.getFixedEquipments());
+                    System.out.println("--------------------");
+
                     System.out.print("Tên phòng mới: ");
                     String newName = scanner.nextLine().trim();
                     System.out.print("Sức chứa mới: ");
@@ -66,7 +112,7 @@ public class AdminMenu {
                     if(adminService.updateRoom(editId, newName, newCap, newLoc, newFixEq)) {
                         System.out.println("-> Cập nhật phòng thành công!");
                     } else {
-                        System.out.println("-> Cập nhật thất bại (Kiểm tra lại ID).");
+                        System.out.println("-> Cập nhật thất bại.");
                     }
                     break;
                 case "4":
@@ -75,40 +121,100 @@ public class AdminMenu {
                     if(adminService.deleteRoom(delId)) {
                         System.out.println("-> Xóa phòng thành công!");
                     } else {
-                        System.out.println("-> Xóa thất bại. Có thể phòng này đang có lịch đặt (Booking).");
+                        System.out.println("-> Xóa thất bại. Có thể phòng này đang có lịch đặt.");
                     }
                     break;
                 case "5":
-                    List<Equipment> eqs = adminService.getAllEquipments();
-                    if (eqs.isEmpty()) {
-                        System.out.println("-> Chưa có thiết bị nào.");
-                    } else {
-                        printEquipmentTable(eqs);
-                    }
+                    System.out.print("Nhập tên phòng cần tìm: ");
+                    String keyword = scanner.nextLine().trim().toLowerCase();
+                    List<Room> searchResults = adminService.getAllRooms().stream()
+                            .filter(r -> r.getRoomName().toLowerCase().contains(keyword))
+                            .collect(Collectors.toList());
+                    if (searchResults.isEmpty()) System.out.println("-> Không tìm thấy phòng nào phù hợp.");
+                    else printRoomTable(searchResults);
                     break;
-                case "6":
+                case "0": back = true; break;
+                default: System.out.println("-> Lựa chọn không hợp lệ.");
+            }
+        }
+    }
+
+    // --- 2. SUB-MENU QUẢN LÝ THIẾT BỊ ---
+    private static void equipmentMenu() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- 2. QUẢN LÝ THIẾT BỊ DI ĐỘNG ---");
+            System.out.println("1. Xem danh sách Thiết bị");
+            System.out.println("2. Thêm Thiết bị mới");
+            System.out.println("3. Cập nhật số lượng khả dụng");
+            System.out.println("4. Sửa thông tin thiết bị (Chưa cập nhật DB)");
+            System.out.println("5. Xóa thiết bị (Chưa cập nhật DB)");
+            System.out.println("0. Quay lại");
+            System.out.print("Chọn chức năng: ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    List<Equipment> eqs = adminService.getAllEquipments();
+                    if (eqs.isEmpty()) System.out.println("-> Chưa có thiết bị nào.");
+                    else printEquipmentTable(eqs);
+                    break;
+                case "2":
                     System.out.print("Tên thiết bị: ");
                     String eqName = scanner.nextLine().trim();
                     System.out.print("Tổng số lượng: ");
                     int total = ValidationUtil.getValidInt(scanner);
-                    if(adminService.addNewEquipment(eqName, total)) {
-                        System.out.println("-> Thêm thiết bị thành công!");
-                    } else {
-                        System.out.println("-> Thêm thiết bị thất bại.");
-                    }
+                    if(adminService.addNewEquipment(eqName, total)) System.out.println("-> Thêm thiết bị thành công!");
                     break;
-                case "7":
+                case "3":
                     System.out.print("Nhập ID thiết bị cần cập nhật: ");
                     int eqId = ValidationUtil.getValidInt(scanner);
                     System.out.print("Số lượng khả dụng hiện tại: ");
                     int available = ValidationUtil.getValidInt(scanner);
-                    if(adminService.updateEquipmentAvailability(eqId, available)) {
-                        System.out.println("-> Cập nhật số lượng thành công!");
-                    } else {
-                        System.out.println("-> Cập nhật thất bại (Kiểm tra lại ID).");
+                    if(adminService.updateEquipmentAvailability(eqId, available)) System.out.println("-> Cập nhật số lượng thành công!");
+                    else System.out.println("-> Cập nhật thất bại.");
+                    break;
+                case "4":
+                case "5":
+                    System.out.println("-> Tính năng Sửa/Xóa thiết bị đang được hoàn thiện.");
+                    break;
+                case "0": back = true; break;
+                default: System.out.println("-> Lựa chọn không hợp lệ.");
+            }
+        }
+    }
+
+    // --- 3. SUB-MENU DỊCH VỤ ---
+    private static void serviceMenu() {
+        System.out.println("\n-> [INFO] Phân hệ Quản lý Dịch vụ đi kèm sẽ được bổ sung ở các bản cập nhật sau.");
+    }
+
+    // --- 4. SUB-MENU NGƯỜI DÙNG ---
+    private static void userMenu() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- 4. QUẢN LÝ NGƯỜI DÙNG ---");
+            System.out.println("1. Xem danh sách Nhân viên Hỗ trợ (Support)");
+            System.out.println("2. Tạo tài khoản Support Staff / Admin");
+            System.out.println("0. Quay lại");
+            System.out.print("Chọn chức năng: ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    List<User> supports = userDAO.getUsersByRole("SUPPORT");
+                    if (supports.isEmpty()) System.out.println("-> Chưa có nhân viên hỗ trợ nào.");
+                    else {
+                        System.out.println("+----+----------------------+---------------------------+");
+                        System.out.printf("| %-2s | %-20s | %-25s |%n", "ID", "Tên đăng nhập", "Họ và tên");
+                        System.out.println("+----+----------------------+---------------------------+");
+                        for (User u : supports) {
+                            System.out.printf("| %-2d | %-20s | %-25s |%n", u.getId(), u.getUsername(), u.getFullName());
+                        }
+                        System.out.println("+----+----------------------+---------------------------+");
                     }
                     break;
-                case "8":
+                case "2":
                     System.out.println("--- TẠO TÀI KHOẢN NỘI BỘ ---");
                     System.out.print("Tên đăng nhập: ");
                     String sUser = scanner.nextLine().trim();
@@ -131,17 +237,60 @@ public class AdminMenu {
                         System.out.println("-> Tạo tài khoản thất bại.");
                     }
                     break;
-                case "0":
-                    System.out.println("-> Đã đăng xuất.");
-                    Main.loggedInUser = null;
-                    isRunning = false;
-                    break;
-                default:
-                    System.out.println("-> Lựa chọn không hợp lệ.");
+                case "0": back = true; break;
+                default: System.out.println("-> Lựa chọn không hợp lệ.");
             }
         }
     }
 
+    // --- 5. SUB-MENU DUYỆT BOOKING ---
+    private static void bookingMenu() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- 5. DUYỆT & PHÂN CÔNG ĐẶT PHÒNG ---");
+            System.out.println("1. Xem các yêu cầu chờ duyệt (PENDING)");
+            System.out.println("2. Xử lý yêu cầu (Duyệt/Từ chối)");
+            System.out.println("0. Quay lại");
+            System.out.print("Chọn chức năng: ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    List<Booking> pendingBookings = bookingDAO.getBookingsByStatus("PENDING");
+                    if (pendingBookings.isEmpty()) {
+                        System.out.println("-> Không có yêu cầu nào đang chờ duyệt.");
+                    } else {
+                        System.out.println("\n--- CÁC YÊU CẦU ĐANG CHỜ DUYỆT (PENDING) ---");
+                        printBookingTable(pendingBookings);
+                    }
+                    break;
+                case "2":
+                    System.out.print("Nhập ID Booking cần xử lý: ");
+                    int bId = ValidationUtil.getValidInt(scanner);
+                    System.out.print("Bạn muốn (1) Duyệt hay (2) Từ chối? : ");
+                    int action = ValidationUtil.getValidInt(scanner);
+
+                    if (action == 2) {
+                        bookingDAO.updateBookingStatus(bId, "REJECTED");
+                        System.out.println("-> Đã từ chối Booking.");
+                    } else if (action == 1) {
+                        List<User> staffs = userDAO.getUsersByRole("SUPPORT");
+                        System.out.println("--- DANH SÁCH NHÂN VIÊN HỖ TRỢ ---");
+                        staffs.forEach(s -> System.out.println("ID: " + s.getId() + " - Tên: " + s.getFullName()));
+                        System.out.print("Nhập ID Support Staff để phân công: ");
+                        int staffId = ValidationUtil.getValidInt(scanner);
+                        if (bookingDAO.assignSupportStaff(bId, staffId)) {
+                            System.out.println("-> Đã duyệt và phân công thành công!");
+                        }
+                    } else {
+                        System.out.println("-> Lựa chọn không hợp lệ.");
+                    }
+                    break;
+                case "0": back = true; break;
+                default: System.out.println("-> Lựa chọn không hợp lệ.");
+            }
+        }
+    }
 
     private static void printRoomTable(List<Room> rooms) {
         System.out.println("+----+----------------------+------------+-----------------+---------------------------+");
@@ -165,5 +314,17 @@ public class AdminMenu {
                     e.getId(), e.getEquipmentName(), e.getTotalQuantity(), e.getAvailableQuantity(), status);
         }
         System.out.println("+----+----------------------+------------+------------+------------+");
+    }
+    private static void printBookingTable(List<Booking> bookings) {
+        System.out.println("+----+---------+---------+------------------+------------------+------------+");
+        System.out.printf("| %-2s | %-7s | %-7s | %-16s | %-16s | %-10s |%n", "ID", "User ID", "Room ID", "Bắt đầu", "Kết thúc", "Trạng thái");
+        System.out.println("+----+---------+---------+------------------+------------------+------------+");
+        for (Booking b : bookings) {
+            String start = util.DateUtil.format(b.getStartTime());
+            String end = util.DateUtil.format(b.getEndTime());
+            System.out.printf("| %-2d | %-7d | %-7d | %-16s | %-16s | %-10s |%n",
+                    b.getId(), b.getUserId(), b.getRoomId(), start, end, b.getStatus());
+        }
+        System.out.println("+----+---------+---------+------------------+------------------+------------+");
     }
 }

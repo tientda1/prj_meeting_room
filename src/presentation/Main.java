@@ -54,14 +54,10 @@ public class Main {
                     AdminMenu.display();
                     break;
                 case "EMPLOYEE":
-                    // Chờ Ngày 3: EmployeeMenu.display();
-                    System.out.println("(Menu Nhân viên đang được xây dựng)");
-                    loggedInUser = null; // Logout tạm
+                    EmployeeMenu.display();
                     break;
                 case "SUPPORT":
-                    // Chờ Ngày 4: SupportMenu.display();
-                    System.out.println("(Menu Hỗ trợ đang được xây dựng)");
-                    loggedInUser = null; // Logout tạm
+                    SupportMenu.display();
                     break;
             }
         } else {
