@@ -102,4 +102,22 @@ public class UserDAOImpl implements IUserDAO {
         }
         return users;
     }
+    @Override
+    public boolean updateProfile(User user) {
+        String sql = "UPDATE users SET full_name = ?, department = ?, phone_ext = ?, email = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getDepartment());
+            ps.setString(3, user.getPhoneExt());
+            ps.setString(4, user.getEmail());
+            ps.setInt(5, user.getId());
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

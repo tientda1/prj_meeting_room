@@ -17,4 +17,7 @@ public class UserService {
         user.setPassword(PasswordHash.hashPassword(rawPassword));
         return userDAO.registerEmployee(user);
     }
+    public boolean updateProfile(User user) {
+        return userDAO.updateProfile(user);
+    }
 }

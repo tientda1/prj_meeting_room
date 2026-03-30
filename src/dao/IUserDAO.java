@@ -8,4 +8,5 @@ public interface IUserDAO {
     boolean registerEmployee(User user);
     boolean createStaffAccount(User user);
     List<User> getUsersByRole(String role);
+    boolean updateProfile(User user);
 }

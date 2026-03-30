@@ -3,8 +3,10 @@ package presentation;
 import model.Booking;
 import model.Equipment;
 import model.Room;
+import model.User;
 import service.AdminService;
 import service.BookingService;
+import service.UserService;
 import util.DateUtil;
 import util.ValidationUtil;
 
@@ -18,6 +20,7 @@ public class EmployeeMenu {
     private static final Scanner scanner = new Scanner(System.in);
     private static final AdminService adminService = new AdminService(); // Mượn tạm để lấy danh sách phòng/thiết bị
     private static final BookingService bookingService = new BookingService();
+    private static final UserService userService = new UserService();
 
     public static void display() {
         boolean isRunning = true;
@@ -25,9 +28,9 @@ public class EmployeeMenu {
             System.out.println("\n=== MENU NHÂN VIÊN (EMPLOYEE) ===");
             System.out.println("1. Xem danh sách Phòng họp");
             System.out.println("2. Đặt phòng (Booking)");
-            System.out.println("3. Xem lịch sử đặt phòng của tôi (Chờ cập nhật)");
+            System.out.println("3. Xem lịch sử đặt phòng của tôi");
+            System.out.println("4. Xem & Cập nhật hồ sơ cá nhân");
             System.out.println("0. Đăng xuất");
-            System.out.print("Chọn chức năng: ");
 
             String choice = scanner.nextLine().trim();
             switch (choice) {
@@ -46,6 +49,9 @@ public class EmployeeMenu {
                         myBookings.forEach(b -> System.out.printf("ID: %d | Phòng: %d | Bắt đầu: %s | Trạng thái: %s%n",
                                 b.getId(), b.getRoomId(), DateUtil.format(b.getStartTime()), b.getStatus()));
                     }
+                    break;
+                case "4":
+                    handleProfile();
                     break;
                 case "0":
                     System.out.println("-> Đã đăng xuất.");
@@ -116,13 +122,48 @@ public class EmployeeMenu {
             }
         }
 
-        // Gọi Service xử lý lưu
         System.out.println("\nĐang xử lý yêu cầu...");
         int currentUserId = Main.loggedInUser.getId();
         boolean isSuccess = bookingService.createBooking(currentUserId, roomId, startTime, endTime, borrowedEquipments);
 
         if (isSuccess) {
             System.out.println("-> [THÀNH CÔNG] Đặt phòng hoàn tất. Trạng thái hiện tại: PENDING (Chờ Admin duyệt).");
+        }
+    }
+    private static void handleProfile() {
+        User currentUser = Main.loggedInUser;
+        System.out.println("\n--- HỒ SƠ CÁ NHÂN ---");
+        System.out.println("1. Họ và tên: " + currentUser.getFullName());
+        System.out.println("2. Phòng ban: " + currentUser.getDepartment());
+        System.out.println("3. Số điện thoại nội bộ: " + currentUser.getPhoneExt());
+        System.out.println("4. Email: " + currentUser.getEmail());
+
+        System.out.print("\nBạn có muốn cập nhật thông tin không? (Y/N): ");
+        if (scanner.nextLine().trim().equalsIgnoreCase("Y")) {
+            System.out.println("[Hướng dẫn: Nhập thông tin mới. Nếu muốn giữ nguyên thông tin cũ, hãy để trống và nhấn Enter]");
+
+            System.out.print("Họ và tên mới [" + currentUser.getFullName() + "]: ");
+            String newName = scanner.nextLine().trim();
+            if (!newName.isEmpty()) currentUser.setFullName(newName);
+
+            System.out.print("Phòng ban mới [" + currentUser.getDepartment() + "]: ");
+            String newDept = scanner.nextLine().trim();
+            if (!newDept.isEmpty()) currentUser.setDepartment(newDept);
+
+            System.out.print("SĐT nội bộ mới [" + currentUser.getPhoneExt() + "]: ");
+            String newPhone = scanner.nextLine().trim();
+            if (!newPhone.isEmpty()) currentUser.setPhoneExt(newPhone);
+
+            System.out.print("Email mới [" + currentUser.getEmail() + "]: ");
+            String newEmail = scanner.nextLine().trim();
+            if (!newEmail.isEmpty()) currentUser.setEmail(newEmail);
+
+            if (userService.updateProfile(currentUser)) {
+                System.out.println("-> Cập nhật hồ sơ thành công!");
+                Main.loggedInUser = currentUser;
+            } else {
+                System.out.println("-> Cập nhật thất bại.");
+            }
         }
     }
 }
