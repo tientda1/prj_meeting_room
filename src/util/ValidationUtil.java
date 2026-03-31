@@ -53,7 +53,6 @@ public class ValidationUtil {
 
     // 2. Hàm kiểm tra định dạng Email bằng Regex
     public static String getValidEmail(Scanner scanner, String prompt) {
-        // Regex kiểm tra email chuẩn (có @, có dấu chấm)
         String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
         while (true) {
             String email = getNonEmptyString(scanner, prompt);
@@ -66,7 +65,6 @@ public class ValidationUtil {
 
     // 3. Hàm kiểm tra định dạng Số điện thoại bằng Regex
     public static String getValidPhone(Scanner scanner, String prompt) {
-        // Regex kiểm tra SĐT Việt Nam: Bắt đầu bằng 0, gồm đúng 10 chữ số
         String regex = "^0\\d{9}$";
         while (true) {
             String phone = getNonEmptyString(scanner, prompt);

@@ -25,10 +25,10 @@ public class AdminMenu {
         boolean isRunning = true;
         while (isRunning) {
             System.out.println("\n=== MENU ADMIN ===");
-            System.out.println("1. Quản lý Phòng họp");
-            System.out.println("2. Quản lý Thiết bị di động");
-            System.out.println("3. Quản lý Dịch vụ đi kèm");
-            System.out.println("4. Quản lý Người dùng");
+            System.out.println("1. Quản lý phòng họp");
+            System.out.println("2. Quản lý thiết bị");
+            System.out.println("3. Quản lý dịch vụ đi kèm");
+            System.out.println("4. Quản lý người dùng");
             System.out.println("5. Duyệt & Phân công Đặt phòng");
             System.out.println("0. Đăng xuất");
             System.out.print("Chọn chức năng: ");
@@ -56,11 +56,11 @@ public class AdminMenu {
         boolean back = false;
         while (!back) {
             System.out.println("\n--- 1. QUẢN LÝ PHÒNG HỌP ---");
-            System.out.println("1. Xem danh sách Phòng họp");
-            System.out.println("2. Thêm Phòng họp mới");
-            System.out.println("3. Sửa thông tin Phòng họp");
-            System.out.println("4. Xóa Phòng họp");
-            System.out.println("5. Tìm kiếm Phòng họp theo tên");
+            System.out.println("1. Xem danh sách phòng họp");
+            System.out.println("2. Thêm phòng họp mới");
+            System.out.println("3. Sửa thông tin phòng họp");
+            System.out.println("4. Xóa phòng họp");
+            System.out.println("5. Tìm kiếm phòng họp theo tên");
             System.out.println("0. Quay lại");
             System.out.print("Chọn chức năng: ");
 
@@ -144,8 +144,8 @@ public class AdminMenu {
         boolean back = false;
         while (!back) {
             System.out.println("\n--- 2. QUẢN LÝ THIẾT BỊ ---");
-            System.out.println("1. Xem danh sách Thiết bị");
-            System.out.println("2. Thêm Thiết bị mới");
+            System.out.println("1. Xem danh sách thiết bị");
+            System.out.println("2. Thêm thiết bị mới");
             System.out.println("3. Cập nhật số lượng khả dụng");
             System.out.println("4. Sửa thông tin thiết bị");
             System.out.println("5. Xóa thiết bị");
@@ -223,10 +223,10 @@ public class AdminMenu {
         boolean back = false;
         while (!back) {
             System.out.println("\n--- 3. QUẢN LÝ DỊCH VỤ ĐI KÈM ---");
-            System.out.println("1. Xem danh sách Dịch vụ");
-            System.out.println("2. Thêm Dịch vụ mới");
-            System.out.println("3. Sửa thông tin Dịch vụ");
-            System.out.println("4. Xóa Dịch vụ");
+            System.out.println("1. Xem danh sách dịch vụ");
+            System.out.println("2. Thêm dịch vụ mới");
+            System.out.println("3. Sửa thông tin dịch vụ");
+            System.out.println("4. Xóa dịch vụ");
             System.out.println("0. Quay lại");
             System.out.print("Chọn chức năng: ");
 
