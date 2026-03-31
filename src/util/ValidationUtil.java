@@ -59,7 +59,7 @@ public class ValidationUtil {
             if (email.matches(regex)) {
                 return email;
             }
-            System.out.println("-> [LỖI] Email không hợp lệ (VD: conan@ptit.edu.vn).");
+            System.out.println("-> [LỖI] Email không hợp lệ (VD: example@ptit.edu.vn).");
         }
     }
 
