@@ -74,7 +74,7 @@ public class Main {
         String dept = ValidationUtil.getNonEmptyString(scanner, "Phòng ban: ");
 
         // Dùng Regex để kiểm tra sđt và email
-        String phone = ValidationUtil.getValidPhone(scanner, "Số điện thoại nội bộ (10 số): ");
+        String phone = ValidationUtil.getValidPhone(scanner, "Số điện thoại nội bộ: ");
         String email = ValidationUtil.getValidEmail(scanner, "Email: ");
 
         User newUser = new User(0, username, null, "EMPLOYEE", fullName, dept, phone, email);

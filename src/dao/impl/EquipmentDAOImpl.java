@@ -61,4 +61,33 @@ public class EquipmentDAOImpl implements IEquipmentDAO {
             return false;
         }
     }
+
+    @Override
+    public boolean updateEquipment(Equipment eq) {
+        String sql = "UPDATE equipments SET equipment_name = ?, total_quantity = ?, available_quantity = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, eq.getEquipmentName());
+            ps.setInt(2, eq.getTotalQuantity());
+            ps.setInt(3, eq.getAvailableQuantity());
+            ps.setInt(4, eq.getId());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteEquipment(int id) {
+        String sql = "DELETE FROM equipments WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("-> [LỖI] Ràng buộc dữ liệu: Không thể xóa thiết bị này vì nó đang nằm trong các đơn Đặt phòng!");
+            return false;
+        }
+    }
 }

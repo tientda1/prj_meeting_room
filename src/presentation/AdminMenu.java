@@ -143,12 +143,12 @@ public class AdminMenu {
     private static void equipmentMenu() {
         boolean back = false;
         while (!back) {
-            System.out.println("\n--- 2. QUẢN LÝ THIẾT BỊ DI ĐỘNG ---");
+            System.out.println("\n--- 2. QUẢN LÝ THIẾT BỊ ---");
             System.out.println("1. Xem danh sách Thiết bị");
             System.out.println("2. Thêm Thiết bị mới");
             System.out.println("3. Cập nhật số lượng khả dụng");
-            System.out.println("4. Sửa thông tin thiết bị (Chưa cập nhật DB)");
-            System.out.println("5. Xóa thiết bị (Chưa cập nhật DB)");
+            System.out.println("4. Sửa thông tin thiết bị");
+            System.out.println("5. Xóa thiết bị");
             System.out.println("0. Quay lại");
             System.out.print("Chọn chức năng: ");
 
@@ -175,8 +175,42 @@ public class AdminMenu {
                     else System.out.println("-> Cập nhật thất bại.");
                     break;
                 case "4":
+                    System.out.print("Nhập ID thiết bị cần sửa: ");
+                    int editEqId = ValidationUtil.getValidInt(scanner);
+
+                    // Lấy thông tin cũ hiển thị
+                    Equipment oldEq = adminService.getAllEquipments().stream().filter(e -> e.getId() == editEqId).findFirst().orElse(null);
+                    if (oldEq == null) {
+                        System.out.println("-> Không tìm thấy thiết bị với ID này!");
+                        break;
+                    }
+                    System.out.println("--- Thông tin cũ ---");
+                    System.out.printf("Tên: %s | Tổng cộng: %d | Khả dụng: %d%n",
+                            oldEq.getEquipmentName(), oldEq.getTotalQuantity(), oldEq.getAvailableQuantity());
+                    System.out.println("--------------------");
+
+                    System.out.print("Tên thiết bị mới: ");
+                    String newEqName = scanner.nextLine().trim();
+                    System.out.print("Tổng số lượng mới: ");
+                    int newTotal = ValidationUtil.getValidInt(scanner);
+                    System.out.print("Số lượng khả dụng mới: ");
+                    int newAvailable = ValidationUtil.getValidInt(scanner);
+
+                    if(adminService.updateEquipmentFull(editEqId, newEqName, newTotal, newAvailable)) {
+                        System.out.println("-> Cập nhật thiết bị thành công!");
+                    } else {
+                        System.out.println("-> Cập nhật thất bại.");
+                    }
+                    break;
                 case "5":
-                    System.out.println("-> Tính năng Sửa/Xóa thiết bị đang được hoàn thiện.");
+                    System.out.print("Nhập ID thiết bị cần xóa: ");
+                    int delEqId = ValidationUtil.getValidInt(scanner);
+                    System.out.print("Bạn có chắc chắn muốn xóa thiết bị này? (Y/N): ");
+                    if (scanner.nextLine().trim().equalsIgnoreCase("Y")) {
+                        if(adminService.deleteEquipment(delEqId)) {
+                            System.out.println("-> Xóa thiết bị thành công!");
+                        }
+                    }
                     break;
                 case "0": back = true; break;
                 default: System.out.println("-> Lựa chọn không hợp lệ.");
