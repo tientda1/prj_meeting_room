@@ -2,6 +2,7 @@ package presentation;
 
 import model.User;
 import service.UserService;
+import util.ValidationUtil;
 
 import java.util.Scanner;
 
@@ -48,7 +49,6 @@ public class Main {
             System.out.println("Đăng nhập thành công! Xin chào " + loggedInUser.getFullName());
             System.out.println("Vai trò của bạn: " + loggedInUser.getRole());
 
-            // Điều hướng menu dựa trên Role
             switch (loggedInUser.getRole()) {
                 case "ADMIN":
                     AdminMenu.display();
@@ -67,24 +67,21 @@ public class Main {
 
     private static void handleRegister() {
         System.out.println("\n--- ĐĂNG KÝ TÀI KHOẢN NHÂN VIÊN ---");
-        System.out.print("Tên đăng nhập: ");
-        String username = scanner.nextLine();
-        System.out.print("Mật khẩu: ");
-        String password = scanner.nextLine();
-        System.out.print("Họ và tên: ");
-        String fullName = scanner.nextLine();
-        System.out.print("Phòng ban: ");
-        String dept = scanner.nextLine();
-        System.out.print("Số điện thoại nội bộ: ");
-        String phone = scanner.nextLine();
-        System.out.print("Email: ");
-        String email = scanner.nextLine();
+
+        String username = ValidationUtil.getNonEmptyString(scanner, "Tên đăng nhập: ");
+        String password = ValidationUtil.getNonEmptyString(scanner, "Mật khẩu: ");
+        String fullName = ValidationUtil.getNonEmptyString(scanner, "Họ và tên: ");
+        String dept = ValidationUtil.getNonEmptyString(scanner, "Phòng ban: ");
+
+        // Dùng Regex để kiểm tra sđt và email
+        String phone = ValidationUtil.getValidPhone(scanner, "Số điện thoại nội bộ (10 số): ");
+        String email = ValidationUtil.getValidEmail(scanner, "Email: ");
 
         User newUser = new User(0, username, null, "EMPLOYEE", fullName, dept, phone, email);
         if (userService.registerEmployee(newUser, password)) {
-            System.out.println("Đăng ký thành công! Bạn có thể đăng nhập ngay.");
+            System.out.println("-> Đăng ký thành công! Bạn có thể đăng nhập ngay.");
         } else {
-            System.out.println("Đăng ký thất bại. Tên đăng nhập có thể đã tồn tại.");
+            System.out.println("-> Đăng ký thất bại. Tên đăng nhập có thể đã tồn tại.");
         }
     }
 }

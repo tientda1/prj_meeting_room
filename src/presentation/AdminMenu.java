@@ -27,7 +27,7 @@ public class AdminMenu {
             System.out.println("\n=== MENU ADMIN ===");
             System.out.println("1. Quản lý Phòng họp");
             System.out.println("2. Quản lý Thiết bị di động");
-            System.out.println("3. Quản lý Dịch vụ đi kèm (Đang phát triển)");
+            System.out.println("3. Quản lý Dịch vụ đi kèm");
             System.out.println("4. Quản lý Người dùng");
             System.out.println("5. Duyệt & Phân công Đặt phòng");
             System.out.println("0. Đăng xuất");
@@ -186,7 +186,72 @@ public class AdminMenu {
 
     // --- 3. SUB-MENU DỊCH VỤ ---
     private static void serviceMenu() {
-        System.out.println("\n-> [INFO] Phân hệ Quản lý Dịch vụ đi kèm sẽ được bổ sung ở các bản cập nhật sau.");
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- 3. QUẢN LÝ DỊCH VỤ ĐI KÈM ---");
+            System.out.println("1. Xem danh sách Dịch vụ");
+            System.out.println("2. Thêm Dịch vụ mới");
+            System.out.println("3. Sửa thông tin Dịch vụ");
+            System.out.println("4. Xóa Dịch vụ");
+            System.out.println("0. Quay lại");
+            System.out.print("Chọn chức năng: ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    List<model.Service> services = adminService.getAllServices();
+                    if (services.isEmpty()) System.out.println("-> Chưa có dịch vụ nào.");
+                    else printServiceTable(services);
+                    break;
+                case "2":
+                    System.out.print("Tên dịch vụ: ");
+                    String sName = scanner.nextLine().trim();
+                    System.out.print("Đơn giá (VD: 15000): ");
+                    double sPrice = ValidationUtil.getValidDouble(scanner);
+                    if(adminService.addNewService(sName, sPrice)) {
+                        System.out.println("-> Thêm dịch vụ thành công!");
+                    } else {
+                        System.out.println("-> Thêm dịch vụ thất bại.");
+                    }
+                    break;
+                case "3":
+                    System.out.print("Nhập ID dịch vụ cần sửa: ");
+                    int editId = ValidationUtil.getValidInt(scanner);
+
+                    model.Service oldSvc = adminService.getAllServices().stream().filter(s -> s.getId() == editId).findFirst().orElse(null);
+                    if (oldSvc == null) {
+                        System.out.println("-> Không tìm thấy dịch vụ với ID này!");
+                        break;
+                    }
+                    System.out.println("--- Thông tin cũ ---");
+                    System.out.printf("Tên: %s | Đơn giá: %.2f%n", oldSvc.getServiceName(), oldSvc.getUnitPrice());
+                    System.out.println("--------------------");
+
+                    System.out.print("Tên dịch vụ mới: ");
+                    String newName = scanner.nextLine().trim();
+                    System.out.print("Đơn giá mới: ");
+                    double newPrice = ValidationUtil.getValidDouble(scanner);
+
+                    if(adminService.updateService(editId, newName, newPrice)) {
+                        System.out.println("-> Cập nhật dịch vụ thành công!");
+                    } else {
+                        System.out.println("-> Cập nhật thất bại.");
+                    }
+                    break;
+                case "4":
+                    System.out.print("Nhập ID dịch vụ cần xóa: ");
+                    int delId = ValidationUtil.getValidInt(scanner);
+                    System.out.print("Bạn có chắc chắn muốn xóa dịch vụ này không? (Y/N): ");
+                    if (scanner.nextLine().trim().equalsIgnoreCase("Y")) {
+                        if(adminService.deleteService(delId)) {
+                            System.out.println("-> Xóa dịch vụ thành công!");
+                        }
+                    }
+                    break;
+                case "0": back = true; break;
+                default: System.out.println("-> Lựa chọn không hợp lệ.");
+            }
+        }
     }
 
     // --- 4. SUB-MENU NGƯỜI DÙNG ---
@@ -326,5 +391,14 @@ public class AdminMenu {
                     b.getId(), b.getUserId(), b.getRoomId(), start, end, b.getStatus());
         }
         System.out.println("+----+---------+---------+------------------+------------------+------------+");
+    }
+    private static void printServiceTable(List<model.Service> services) {
+        System.out.println("+----+--------------------------------+-----------------+");
+        System.out.printf("| %-2s | %-30s | %-15s |%n", "ID", "Tên dịch vụ", "Đơn giá (VNĐ)");
+        System.out.println("+----+--------------------------------+-----------------+");
+        for (model.Service s : services) {
+            System.out.printf("| %-2d | %-30s | %-15.2f |%n", s.getId(), s.getServiceName(), s.getUnitPrice());
+        }
+        System.out.println("+----+--------------------------------+-----------------+");
     }
 }

@@ -18,7 +18,7 @@ import java.util.Scanner;
 
 public class EmployeeMenu {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final AdminService adminService = new AdminService(); // Mượn tạm để lấy danh sách phòng/thiết bị
+    private static final AdminService adminService = new AdminService();
     private static final BookingService bookingService = new BookingService();
     private static final UserService userService = new UserService();
 

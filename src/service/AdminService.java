@@ -2,21 +2,26 @@ package service;
 
 import dao.IEquipmentDAO;
 import dao.IRoomDAO;
+import dao.IServiceDAO;
 import dao.IUserDAO;
 import dao.impl.EquipmentDAOImpl;
 import dao.impl.RoomDAOImpl;
+import dao.impl.ServiceDAOImpl;
 import dao.impl.UserDAOImpl;
 import model.Equipment;
 import model.Room;
+import model.Service;
 import model.User;
 import util.PasswordHash;
 
 import java.util.List;
 
+
 public class AdminService {
     private final IRoomDAO roomDAO = new RoomDAOImpl();
     private final IEquipmentDAO equipmentDAO = new EquipmentDAOImpl();
-    private final IUserDAO userDAO = new UserDAOImpl(); // Thêm DAO để quản lý User
+    private final IUserDAO userDAO = new UserDAOImpl();
+    private final IServiceDAO serviceDAO = new ServiceDAOImpl();
 
     // --- QUẢN LÝ PHÒNG HỌP ---
     public List<Room> getAllRooms() {
@@ -60,5 +65,23 @@ public class AdminService {
         String hashedPass = PasswordHash.hashPassword(rawPassword);
         User user = new User(0, username, hashedPass, role, fullName, dept, phone, email);
         return userDAO.createStaffAccount(user);
+    }
+
+    public List<Service> getAllServices() {
+        return serviceDAO.getAllServices();
+    }
+
+    public boolean addNewService(String name, double price) {
+        Service service = new Service(0, name, price);
+        return serviceDAO.addService(service);
+    }
+
+    public boolean updateService(int id, String name, double price) {
+        Service service = new Service(id, name, price);
+        return serviceDAO.updateService(service);
+    }
+
+    public boolean deleteService(int id) {
+        return serviceDAO.deleteService(id);
     }
 }
