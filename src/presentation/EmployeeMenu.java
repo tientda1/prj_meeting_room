@@ -37,17 +37,28 @@ public class EmployeeMenu {
 
             String choice = scanner.nextLine().trim();
             switch (choice) {
-                case "1": displayRooms(adminService.getAllRooms()); break;
-                case "2": handleBooking(); break;
-                case "3": showMyBookings(); break;
-                case "4": handleCancelBooking(); break;
-                case "5": handleProfile(); break;
+                case "1":
+                    displayRooms(adminService.getAllRooms());
+                    break;
+                case "2":
+                    handleBooking();
+                    break;
+                case "3":
+                    showMyBookings();
+                    break;
+                case "4":
+                    handleCancelBooking();
+                    break;
+                case "5":
+                    handleProfile();
+                    break;
                 case "0":
                     System.out.println("-> Đã đăng xuất.");
                     Main.loggedInUser = null;
                     isRunning = false;
                     break;
-                default: System.out.println("-> Lựa chọn không hợp lệ.");
+                default:
+                    System.out.println("-> Lựa chọn không hợp lệ.");
             }
         }
     }
@@ -109,7 +120,8 @@ public class EmployeeMenu {
             List<Equipment> eqs = adminService.getAllEquipments();
             while (true) {
                 System.out.println("\n--- DANH SÁCH THIẾT BỊ ---");
-                for (Equipment e : eqs) System.out.printf("ID: %d | Tên: %s | Khả dụng: %d%n", e.getId(), e.getEquipmentName(), e.getAvailableQuantity());
+                for (Equipment e : eqs)
+                    System.out.printf("ID: %d | Tên: %s | Khả dụng: %d%n", e.getId(), e.getEquipmentName(), e.getAvailableQuantity());
 
                 System.out.print("Nhập ID thiết bị muốn mượn (Nhập 0 để XONG): ");
                 int eqId = ValidationUtil.getValidInt(scanner);
@@ -128,7 +140,8 @@ public class EmployeeMenu {
             List<model.Service> svcs = adminService.getAllServices();
             while (true) {
                 System.out.println("\n--- DANH SÁCH DỊCH VỤ ---");
-                for (model.Service s : svcs) System.out.printf("ID: %d | Tên: %s | Đơn giá: %.2f VNĐ%n", s.getId(), s.getServiceName(), s.getUnitPrice());
+                for (model.Service s : svcs)
+                    System.out.printf("ID: %d | Tên: %s | Đơn giá: %.2f VNĐ%n", s.getId(), s.getServiceName(), s.getUnitPrice());
 
                 System.out.print("Nhập ID dịch vụ muốn đặt (Nhập 0 để XONG): ");
                 int svcId = ValidationUtil.getValidInt(scanner);

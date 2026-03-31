@@ -58,6 +58,7 @@ public class AdminService {
     public boolean updateEquipmentAvailability(int equipmentId, int availableQuantity) {
         return equipmentDAO.updateAvailableQuantity(equipmentId, availableQuantity);
     }
+
     // BỔ SUNG: Sửa toàn bộ thông tin thiết bị
     public boolean updateEquipmentFull(int id, String name, int total, int available) {
         Equipment eq = new Equipment(id, name, total, available, "ACTIVE");

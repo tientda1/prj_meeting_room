@@ -52,7 +52,10 @@ public class SupportMenu {
                     if (statusChoice == 1) newStatus = "PREPARING";
                     else if (statusChoice == 2) newStatus = "READY";
                     else if (statusChoice == 3) newStatus = "LACK_EQUIPMENT";
-                    else { System.out.println("-> Lựa chọn không hợp lệ."); break; }
+                    else {
+                        System.out.println("-> Lựa chọn không hợp lệ.");
+                        break;
+                    }
 
                     if (supportService.updateTaskStatus(bookingId, newStatus)) {
                         System.out.println("-> Cập nhật trạng thái thành công!");

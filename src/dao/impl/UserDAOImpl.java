@@ -102,6 +102,7 @@ public class UserDAOImpl implements IUserDAO {
         }
         return users;
     }
+
     @Override
     public boolean updateProfile(User user) {
         String sql = "UPDATE users SET full_name = ?, department = ?, phone_ext = ?, email = ? WHERE id = ?";

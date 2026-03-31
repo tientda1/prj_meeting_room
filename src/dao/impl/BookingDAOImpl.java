@@ -85,6 +85,7 @@ public class BookingDAOImpl implements IBookingDAO {
             return false;
         }
     }
+
     private Booking mapRowToBooking(ResultSet rs) throws SQLException {
         Integer staffId = rs.getObject("support_staff_id") != null ? rs.getInt("support_staff_id") : null;
         return new Booking(
@@ -105,7 +106,9 @@ public class BookingDAOImpl implements IBookingDAO {
             ps.setString(1, status);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) list.add(mapRowToBooking(rs));
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return list;
     }
 
@@ -118,7 +121,9 @@ public class BookingDAOImpl implements IBookingDAO {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) list.add(mapRowToBooking(rs));
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return list;
     }
 
@@ -131,7 +136,9 @@ public class BookingDAOImpl implements IBookingDAO {
             ps.setInt(1, staffId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) list.add(mapRowToBooking(rs));
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return list;
     }
 
@@ -143,7 +150,9 @@ public class BookingDAOImpl implements IBookingDAO {
             ps.setString(1, status);
             ps.setInt(2, bookingId);
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) { return false; }
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     @Override
@@ -154,6 +163,8 @@ public class BookingDAOImpl implements IBookingDAO {
             ps.setInt(1, staffId);
             ps.setInt(2, bookingId);
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) { return false; }
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }

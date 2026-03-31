@@ -35,11 +35,21 @@ public class AdminMenu {
 
             String choice = scanner.nextLine().trim();
             switch (choice) {
-                case "1": roomMenu(); break;
-                case "2": equipmentMenu(); break;
-                case "3": serviceMenu(); break;
-                case "4": userMenu(); break;
-                case "5": bookingMenu(); break;
+                case "1":
+                    roomMenu();
+                    break;
+                case "2":
+                    equipmentMenu();
+                    break;
+                case "3":
+                    serviceMenu();
+                    break;
+                case "4":
+                    userMenu();
+                    break;
+                case "5":
+                    bookingMenu();
+                    break;
                 case "0":
                     System.out.println("-> Đã đăng xuất.");
                     Main.loggedInUser = null;
@@ -80,7 +90,7 @@ public class AdminMenu {
                     String loc = scanner.nextLine().trim();
                     System.out.print("Thiết bị cố định: ");
                     String fixEq = scanner.nextLine().trim();
-                    if(adminService.addNewRoom(name, cap, loc, fixEq)) {
+                    if (adminService.addNewRoom(name, cap, loc, fixEq)) {
                         System.out.println("-> Thêm phòng thành công!");
                     } else {
                         System.out.println("-> Thất bại. Tên phòng có thể đã tồn tại.");
@@ -109,7 +119,7 @@ public class AdminMenu {
                     String newLoc = scanner.nextLine().trim();
                     System.out.print("Thiết bị cố định mới: ");
                     String newFixEq = scanner.nextLine().trim();
-                    if(adminService.updateRoom(editId, newName, newCap, newLoc, newFixEq)) {
+                    if (adminService.updateRoom(editId, newName, newCap, newLoc, newFixEq)) {
                         System.out.println("-> Cập nhật phòng thành công!");
                     } else {
                         System.out.println("-> Cập nhật thất bại.");
@@ -118,7 +128,7 @@ public class AdminMenu {
                 case "4":
                     System.out.print("Nhập ID phòng cần xóa: ");
                     int delId = ValidationUtil.getValidInt(scanner);
-                    if(adminService.deleteRoom(delId)) {
+                    if (adminService.deleteRoom(delId)) {
                         System.out.println("-> Xóa phòng thành công!");
                     } else {
                         System.out.println("-> Xóa thất bại. Có thể phòng này đang có lịch đặt.");
@@ -133,8 +143,11 @@ public class AdminMenu {
                     if (searchResults.isEmpty()) System.out.println("-> Không tìm thấy phòng nào phù hợp.");
                     else printRoomTable(searchResults);
                     break;
-                case "0": back = true; break;
-                default: System.out.println("-> Lựa chọn không hợp lệ.");
+                case "0":
+                    back = true;
+                    break;
+                default:
+                    System.out.println("-> Lựa chọn không hợp lệ.");
             }
         }
     }
@@ -164,14 +177,15 @@ public class AdminMenu {
                     String eqName = scanner.nextLine().trim();
                     System.out.print("Tổng số lượng: ");
                     int total = ValidationUtil.getValidInt(scanner);
-                    if(adminService.addNewEquipment(eqName, total)) System.out.println("-> Thêm thiết bị thành công!");
+                    if (adminService.addNewEquipment(eqName, total)) System.out.println("-> Thêm thiết bị thành công!");
                     break;
                 case "3":
                     System.out.print("Nhập ID thiết bị cần cập nhật: ");
                     int eqId = ValidationUtil.getValidInt(scanner);
                     System.out.print("Số lượng khả dụng hiện tại: ");
                     int available = ValidationUtil.getValidInt(scanner);
-                    if(adminService.updateEquipmentAvailability(eqId, available)) System.out.println("-> Cập nhật số lượng thành công!");
+                    if (adminService.updateEquipmentAvailability(eqId, available))
+                        System.out.println("-> Cập nhật số lượng thành công!");
                     else System.out.println("-> Cập nhật thất bại.");
                     break;
                 case "4":
@@ -196,7 +210,7 @@ public class AdminMenu {
                     System.out.print("Số lượng khả dụng mới: ");
                     int newAvailable = ValidationUtil.getValidInt(scanner);
 
-                    if(adminService.updateEquipmentFull(editEqId, newEqName, newTotal, newAvailable)) {
+                    if (adminService.updateEquipmentFull(editEqId, newEqName, newTotal, newAvailable)) {
                         System.out.println("-> Cập nhật thiết bị thành công!");
                     } else {
                         System.out.println("-> Cập nhật thất bại.");
@@ -207,13 +221,16 @@ public class AdminMenu {
                     int delEqId = ValidationUtil.getValidInt(scanner);
                     System.out.print("Bạn có chắc chắn muốn xóa thiết bị này? (Y/N): ");
                     if (scanner.nextLine().trim().equalsIgnoreCase("Y")) {
-                        if(adminService.deleteEquipment(delEqId)) {
+                        if (adminService.deleteEquipment(delEqId)) {
                             System.out.println("-> Xóa thiết bị thành công!");
                         }
                     }
                     break;
-                case "0": back = true; break;
-                default: System.out.println("-> Lựa chọn không hợp lệ.");
+                case "0":
+                    back = true;
+                    break;
+                default:
+                    System.out.println("-> Lựa chọn không hợp lệ.");
             }
         }
     }
@@ -242,7 +259,7 @@ public class AdminMenu {
                     String sName = scanner.nextLine().trim();
                     System.out.print("Đơn giá (VD: 15000): ");
                     double sPrice = ValidationUtil.getValidDouble(scanner);
-                    if(adminService.addNewService(sName, sPrice)) {
+                    if (adminService.addNewService(sName, sPrice)) {
                         System.out.println("-> Thêm dịch vụ thành công!");
                     } else {
                         System.out.println("-> Thêm dịch vụ thất bại.");
@@ -266,7 +283,7 @@ public class AdminMenu {
                     System.out.print("Đơn giá mới: ");
                     double newPrice = ValidationUtil.getValidDouble(scanner);
 
-                    if(adminService.updateService(editId, newName, newPrice)) {
+                    if (adminService.updateService(editId, newName, newPrice)) {
                         System.out.println("-> Cập nhật dịch vụ thành công!");
                     } else {
                         System.out.println("-> Cập nhật thất bại.");
@@ -277,13 +294,16 @@ public class AdminMenu {
                     int delId = ValidationUtil.getValidInt(scanner);
                     System.out.print("Bạn có chắc chắn muốn xóa dịch vụ này không? (Y/N): ");
                     if (scanner.nextLine().trim().equalsIgnoreCase("Y")) {
-                        if(adminService.deleteService(delId)) {
+                        if (adminService.deleteService(delId)) {
                             System.out.println("-> Xóa dịch vụ thành công!");
                         }
                     }
                     break;
-                case "0": back = true; break;
-                default: System.out.println("-> Lựa chọn không hợp lệ.");
+                case "0":
+                    back = true;
+                    break;
+                default:
+                    System.out.println("-> Lựa chọn không hợp lệ.");
             }
         }
     }
@@ -330,14 +350,17 @@ public class AdminMenu {
                     System.out.print("Email: ");
                     String sEmail = scanner.nextLine().trim();
 
-                    if(adminService.createSystemAccount(sUser, sPass, sRole, sName, sDept, sPhone, sEmail)) {
+                    if (adminService.createSystemAccount(sUser, sPass, sRole, sName, sDept, sPhone, sEmail)) {
                         System.out.println("-> Tạo tài khoản " + sRole + " thành công!");
                     } else {
                         System.out.println("-> Tạo tài khoản thất bại.");
                     }
                     break;
-                case "0": back = true; break;
-                default: System.out.println("-> Lựa chọn không hợp lệ.");
+                case "0":
+                    back = true;
+                    break;
+                default:
+                    System.out.println("-> Lựa chọn không hợp lệ.");
             }
         }
     }
@@ -385,8 +408,11 @@ public class AdminMenu {
                         System.out.println("-> Lựa chọn không hợp lệ.");
                     }
                     break;
-                case "0": back = true; break;
-                default: System.out.println("-> Lựa chọn không hợp lệ.");
+                case "0":
+                    back = true;
+                    break;
+                default:
+                    System.out.println("-> Lựa chọn không hợp lệ.");
             }
         }
     }
@@ -414,6 +440,7 @@ public class AdminMenu {
         }
         System.out.println("+----+----------------------+------------+------------+------------+");
     }
+
     private static void printBookingTable(List<Booking> bookings) {
         System.out.println("+----+---------+---------+------------------+------------------+------------+");
         System.out.printf("| %-2s | %-7s | %-7s | %-16s | %-16s | %-10s |%n", "ID", "User ID", "Room ID", "Bắt đầu", "Kết thúc", "Trạng thái");
@@ -426,6 +453,7 @@ public class AdminMenu {
         }
         System.out.println("+----+---------+---------+------------------+------------------+------------+");
     }
+
     private static void printServiceTable(List<model.Service> services) {
         System.out.println("+----+--------------------------------+-----------------+");
         System.out.printf("| %-2s | %-30s | %-15s |%n", "ID", "Tên dịch vụ", "Đơn giá (VNĐ)");
